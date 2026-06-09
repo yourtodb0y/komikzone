@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KomikZone - Admin Zone</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght=400;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+        :root { --ink: #0d0d0d; --paper: #fefaf2; --accent: #ff3b30; --accent2: #ffd60a; --accent3: #0a84ff; --ps: 5px 5px 0px #0d0d0d; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { background: var(--paper); color: var(--ink); font-family: 'Nunito', sans-serif; min-height: 100vh; padding: 20px; display: flex; align-items: center; justify-content: center; }
+        body::before { content: ''; position: fixed; inset: 0; background-image: radial-gradient(circle, #d4c9b0 1px, transparent 1px); background-size: 20px 20px; opacity: .45; pointer-events: none; z-index: 0; }
+
+        /* Card Utama Admin Zone */
+        .admin-card { background: #fff; border: 4px solid var(--ink); box-shadow: var(--ps); border-radius: 12px; width: 100%; max-width: 420px; padding: 35px 25px; position: relative; z-index: 10; text-align: center; }
+        
+        .close-btn { position: absolute; top: 15px; right: 15px; background: var(--accent); color: white; border: 2.5px solid var(--ink); width: 28px; height: 28px; border-radius: 6px; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 var(--ink); text-decoration: none; }
+
+        .admin-logo { font-family: 'Bangers', cursive; font-size: 2.5rem; color: var(--accent2); text-shadow: 3px 3px 0 var(--accent); -webkit-text-stroke: 2px var(--ink); margin-bottom: 30px; letter-spacing: 1px; }
+
+        .admin-menu-list { display: flex; flex-direction: column; gap: 14px; }
+        .admin-btn-item { background: #fff; border: 3px solid var(--ink); border-radius: 8px; padding: 14px 18px; font-weight: 900; font-size: 0.9rem; text-decoration: none; color: var(--ink); display: flex; justify-content: space-between; align-items: center; box-shadow: 3px 3px 0 var(--ink); cursor: pointer; transition: 0.1s; text-transform: uppercase; }
+        .admin-btn-item:hover { background: var(--paper); transform: translate(-2px, -2px); box-shadow: 5px 5px 0 var(--ink); }
+        .admin-btn-item span.arrow { font-size: 1.1rem; font-weight: 900; }
+
+        /* Sub-Panel Content */
+        .sub-panel { display: none; background: #fff; border: 4px solid var(--ink); box-shadow: var(--ps); border-radius: 12px; width: 100%; max-width: 500px; padding: 25px; position: relative; z-index: 20; }
+        .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; border-bottom: 3px dashed var(--ink); padding-bottom: 10px; }
+        .panel-title { font-family: 'Bangers', cursive; font-size: 1.6rem; letter-spacing: 1px; color: var(--ink); }
+        
+        .back-to-menu { background: #fff; border: 2px solid var(--ink); padding: 4px 10px; font-weight: 800; font-size: 0.75rem; border-radius: 4px; cursor: pointer; box-shadow: 2px 2px 0 var(--ink); }
+
+        /* Form Styling */
+        .form-group { margin-bottom: 14px; text-align: left; }
+        .form-group label { display: block; font-weight: 800; font-size: 0.85rem; margin-bottom: 5px; text-transform: uppercase; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 2.5px solid var(--ink); border-radius: 6px; font-family: inherit; font-weight: 700; font-size: 0.9rem; outline: none; background: #fff; }
+        
+        .form-group input[type="file"] { padding: 8px; background: var(--paper); cursor: pointer; }
+
+        .btn-submit { background: var(--accent2); color: var(--ink); border: 3px solid var(--ink); width: 100%; padding: 12px; font-weight: 900; font-size: 1rem; border-radius: 8px; cursor: pointer; box-shadow: var(--ps); text-transform: uppercase; margin-top: 15px; display: block; text-align: center; }
+        .btn-submit:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--ink); }
+
+        /* Section Edit Chapter */
+        .chapter-box { background: var(--paper); border: 3px solid var(--ink); border-radius: 8px; padding: 15px; margin-top: 20px; box-shadow: 3px 3px 0 var(--ink); text-align: left; }
+        .chapter-list-item { display: flex; justify-content: space-between; align-items: center; background: #fff; border: 2px solid var(--ink); padding: 8px 12px; border-radius: 6px; margin-top: 8px; font-weight: 700; }
+        .btn-delete-ch { background: var(--accent); color: white; border: 2px solid var(--ink); padding: 2px 8px; font-size: 0.8rem; border-radius: 4px; cursor: pointer; font-weight: 800; }
+    </style>
+</head>
+<body>
+
+<div class="admin-card" id="mainAdminMenu">
+    <a href="index.html" class="close-btn">✕</a>
+    <div class="admin-logo">👑 ADMIN ZONE</div>
+    
+    <div class="admin-menu-list">
+        <div class="admin-btn-item" onclick="bukaPanel('panelUpload')">
+            <span>Upload Komik & Video</span>
+            <span class="arrow">➔</span>
+        </div>
+        <div class="admin-btn-item" onclick="bukaPanel('panelLeveling')">
+            <span>Edit Leveling</span>
+            <span class="arrow">➔</span>
+        </div>
+    </div>
+</div>
+
+<div class="sub-panel" id="panelUpload">
+    <div class="panel-header">
+        <div class="panel-title">📤 MANAJEMEN KONTEN</div>
+        <button class="back-to-menu" onclick="kembaliKeMenu()">⬅ KEMBALI</button>
+    </div>
+    
+    <form id="formUploadKonten" onsubmit="handleUploadKonten(event)">
+        <div class="form-group">
+            <label>Tipe Konten</label>
+            <select id="uploadType" onchange="sesuaikanFormTipe()">
+                <option value="komik">📚 Komik Baru</option>
+                <option value="video">🎬 Video Baru</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Judul Konten</label>
+            <input type="text" id="uploadTitle" placeholder="Masukkan judul..." required>
+        </div>
+        <div class="form-group">
+            <label>Genre / Kategori</label>
+            <input type="text" id="uploadGenre" placeholder="Contoh: Modifikasi, Action" required>
+        </div>
+        
+        <div class="form-group">
+            <label>Pilih File Thumbnail (Dari Galeri HP)</label>
+            <input type="file" id="uploadThumbFile" accept="image/*" required>
+        </div>
+
+        <div class="form-group" id="areaKomikOnly">
+            <label>Upload Lembar Isi Komik (Bisa Pilih Banyak Gambar)</label>
+            <input type="file" id="uploadPagesFiles" accept="image/*" multiple>
+        </div>
+        <div class="form-group" id="areaVideoOnly" style="display: none;">
+            <label>Upload File Video / Klip Tutorial (.mp4)</label>
+            <input type="file" id="uploadVideoFile" accept="video/*">
+        </div>
+        
+        <button type="submit" class="btn-submit">🚀 UPLOAD KONTEN SEKARANG</button>
+    </form>
+
+    <div class="chapter-box">
+        <h3 id="panelEditTitle" style="font-family:'Bangers'; font-size:1.3rem; letter-spacing:0.5px;">🛠️ KELOLA CHAPTER KOMIK</h3>
+        <p id="panelEditDesc" style="font-size:0.8rem; font-weight:700; color:#666; margin-bottom:10px;">Daftar komik aktif di beranda:</p>
+        
+        <div id="listChapterContainer"></div>
+    </div>
+</div>
+
+<div class="sub-panel" id="panelLeveling">
+    <div class="panel-header">
+        <div class="panel-title">⚙️ SET LEVELING & PANGKAT</div>
+        <button class="back-to-menu" onclick="kembaliKeMenu()">⬅ KEMBALI</button>
+    </div>
+    <form onsubmit="handleSaveLeveling(event)">
+        <div class="form-group">
+            <label>Bonus EXP per Aktivitas</label>
+            <input type="number" id="cfgExpReward" value="20" required>
+        </div>
+        <div class="form-group">
+            <label>Urutan Pangkat Kustom (Pisah dengan koma)</label>
+            <textarea id="cfgPangkatList" placeholder="Newbie, Pemula Rendah..."></textarea>
+        </div>
+        <button type="submit" class="btn-submit">💾 SIMPAN KONFIGURASI</button>
+    </form>
+</div>
+
+<script>
+    function bukaPanel(panelId) {
+        document.getElementById('mainAdminMenu').style.display = 'none';
+        document.getElementById('panelUpload').style.display = 'none';
+        document.getElementById('panelLeveling').style.display = 'none';
+        document.getElementById(panelId).style.display = 'block';
+
+        if (panelId === 'panelUpload') {
+            tampilkanDaftarKontenLokal();
+        }
+
+        if (panelId === 'panelLeveling') {
+            document.getElementById('cfgExpReward').value = localStorage.getItem('cfg_exp_reward') || "20";
+            document.getElementById('cfgPangkatList').value = localStorage.getItem('cfg_pangkat_custom') || "Newbie, Pemula Rendah, Pecandu Komik, Elite Otaku, Shadow Monarch";
+        }
+    }
+
+    function kembaliKeMenu() {
+        document.getElementById('panelUpload').style.display = 'none';
+        document.getElementById('panelLeveling').style.display = 'none';
+        document.getElementById('mainAdminMenu').style.display = 'block';
+    }
+
+    function sesuaikanFormTipe() {
+        const type = document.getElementById('uploadType').value;
+        const panelTitle = document.getElementById('panelEditTitle');
+        const panelDesc = document.getElementById('panelEditDesc');
+
+        if (type === 'video') {
+            document.getElementById('areaKomikOnly').style.display = 'none';
+            document.getElementById('areaVideoOnly').style.display = 'block';
+            panelTitle.textContent = "🛠️ KELOLA VIDEO TUTORIAL";
+            panelDesc.textContent = "Daftar video aktif di Video Zone:";
+        } else {
+            document.getElementById('areaKomikOnly').style.display = 'block';
+            document.getElementById('areaVideoOnly').style.display = 'none';
+            panelTitle.textContent = "🛠️ KELOLA CHAPTER KOMIK";
+            panelDesc.textContent = "Daftar komik aktif di beranda:";
+        }
+
+        tampilkanDaftarKontenLokal();
+    }
+
+    function handleUploadKonten(e) {
+        e.preventDefault();
+        
+        const judulInput = document.getElementById('uploadTitle').value;
+        const tipeInput = document.getElementById('uploadType').value;
+        const genreInput = document.getElementById('uploadGenre').value;
+        const thumbFile = document.getElementById('uploadThumbFile').files[0];
+
+        if(!thumbFile) {
+            alert("Harap pilih file gambar!");
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const base64Gambar = event.target.result;
+            let dbKonten = JSON.parse(localStorage.getItem('uz_custom_konten')) || [];
+            
+            dbKonten.push({
+                id: "local_" + Date.now().toString(),
+                tipe: tipeInput,
+                t: judulInput, 
+                judul: judulInput,
+                img: base64Gambar,
+                thumbnail: base64Gambar,
+                url: base64Gambar,
+                g: genreInput,
+                kategori: genreInput,
+                c: "Ch. 01",
+                b: "new",
+                r: "9.8"
+            });
+            
+            localStorage.setItem('uz_custom_konten', JSON.stringify(dbKonten));
+            alert(`✅ BERHASIL! ${tipeInput.toUpperCase()} "${judulInput}" siap tampil.`);
+            document.getElementById('formUploadKonten').reset();
+            sesuaikanFormTipe();
+        };
+        reader.readAsDataURL(thumbFile);
+    }
+
+    // JEMBATAN PINTAR: Menggabungkan data Local Browser + Data Server Permanen (server.js)
+    async function tampilkanDaftarKontenLokal() {
+        const container = document.getElementById('listChapterContainer');
+        const tipeAktif = document.getElementById('uploadType').value; 
+        
+        // 1. Ambil data dari LocalStorage HP
+        let dbKontenLocal = JSON.parse(localStorage.getItem('uz_custom_konten')) || [];
+        let listGabungan = [];
+
+        // Filter data Local
+        dbKontenLocal.forEach(item => {
+            if (item.judul || item.thumbnail || item.kategori || item.url) {
+                if (!item.tipe) item.tipe = 'video';
+            }
+            if (item.t && !item.judul) {
+                if (!item.tipe) item.tipe = 'komik';
+            }
+            let tSuku = item.tipe ? item.tipe.toLowerCase() : 'komik';
+            if (tSuku === tipeAktif) {
+                listGabungan.push({
+                    id: item.id || 'local_' + item.judul,
+                    judul: item.judul || item.t,
+                    sumber: 'local'
+                });
+            }
+        });
+
+        // 2. Ambil data dari API Server Permanen (Biar video / komik lama nongol!)
+        try {
+            let endpoint = tipeAktif === 'video' ? '/api/videos' : '/api/komik';
+            let response = await fetch(endpoint);
+            if (response.ok) {
+                let dbServer = await response.json();
+                dbServer.forEach(item => {
+                    listGabungan.push({
+                        id: item.id,
+                        judul: item.judul || item.t,
+                        sumber: 'server'
+                    });
+                });
+            }
+        } catch (err) {
+            console.log("Server sedang offline, menampilkan data local saja.");
+        }
+
+        if(listGabungan.length === 0) {
+            container.innerHTML = `<div class="chapter-list-item" style="color: #999; justify-content: center;">Belum ada data ${tipeAktif} tersedia.</div>`;
+            return;
+        }
+
+        let emojiDinamis = tipeAktif === 'video' ? '🎬' : '📚';
+
+        container.innerHTML = listGabungan.map((konten) => {
+            let labelSumber = konten.sumber === 'server' ? ' <small style="color:#0a84ff;">(Server)</small>' : ' <small style="color:#ff9f0a;">(HP)</small>';
+            return `
+                <div class="chapter-list-item">
+                    <span>${emojiDinamis} ${konten.judul} ${labelSumber}</span>
+                    <button class="btn-delete-ch" onclick="hapusKontenPro('${konten.id}', '${konten.sumber}')">Hapus</button>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // Fungsi Hapus Pintar: Jika data server, tembak API server. Jika data local, potong localStorage
+    async function hapusKontenPro(id, sumber) {
+        if(!confirm("Apakah Anda yakin ingin menghapus konten ini?")) return;
+        const tipeAktif = document.getElementById('uploadType').value;
+
+        if (sumber === 'server') {
+            // SINKRONISASI KE API SERVER.JS (Menolak hilangnya data/fitur asli)
+            let endpoint = tipeAktif === 'video' ? '/api/video/hapus' : '/api/komik/hapus';
+            let payload = tipeAktif === 'video' ? { videoId: id } : { komikId: id };
+
+            try {
+                let res = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                let hasil = await res.json();
+                if (hasil.success) {
+                    alert("✅ Berhasil menghapus data dari Server!");
+                } else {
+                    alert("⚠️ Gagal: " + (hasil.message || "Akses ditolak admin"));
+                }
+            } catch (err) {
+                alert("❌ Gagal terhubung ke Server Termux.");
+            }
+        } else {
+            // Hapus data local browser HP
+            let dbKontenLocal = JSON.parse(localStorage.getItem('uz_custom_konten')) || [];
+            dbKontenLocal = dbKontenLocal.filter(item => item.id !== id);
+            localStorage.setItem('uz_custom_konten', JSON.stringify(dbKontenLocal));
+            alert("✅ Berhasil menghapus data dari HP!");
+        }
+
+        tampilkanDaftarKontenLokal();
+    }
+
+    function handleSaveLeveling(e) {
+        e.preventDefault();
+        localStorage.setItem('cfg_exp_reward', document.getElementById('cfgExpReward').value);
+        localStorage.setItem('cfg_pangkat_custom', document.getElementById('cfgPangkatList').value);
+        alert("✅ Konfigurasi Leveling diperbarui!");
+        kembaliKeMenu();
+    }
+</script>
+</body>
+</html>

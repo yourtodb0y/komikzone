@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KomikZone - Detail Konten</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght=400;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+        :root { --ink: #0d0d0d; --paper: #fefaf2; --accent: #ff3b30; --accent2: #ffd60a; --accent3: #0a84ff; --ps: 5px 5px 0px #0d0d0d; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { background: var(--paper); color: var(--ink); font-family: 'Nunito', sans-serif; min-height: 100vh; padding: 15px; padding-bottom: 50px; }
+        body::before { content: ''; position: fixed; inset: 0; background-image: radial-gradient(circle, #d4c9b0 1px, transparent 1px); background-size: 20px 20px; opacity: .45; pointer-events: none; z-index: 0; }
+
+        .container { max-width: 600px; margin: 0 auto; position: relative; z-index: 10; }
+        
+        /* Navigasi Atas */
+        .header-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: #fff; border: 3px solid var(--ink); padding: 10px 15px; border-radius: 10px; box-shadow: 3px 3px 0 var(--ink); }
+        .btn-back { background: var(--accent2); color: var(--ink); border: 2px solid var(--ink); padding: 6px 12px; font-weight: 900; border-radius: 6px; cursor: pointer; text-decoration: none; font-size: 0.85rem; }
+
+        /* Card Utama Detail */
+        .main-card { background: #fff; border: 4px solid var(--ink); box-shadow: var(--ps); border-radius: 12px; padding: 25px 20px; text-align: center; margin-bottom: 20px; }
+        
+        /* 1. Thumbnail Tengah Atas */
+        .thumb-wrapper { display: inline-block; margin: 0 auto 20px auto; border: 4px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); border-radius: 10px; overflow: hidden; width: 180px; height: 250px; background: #eee; }
+        .thumb-img { width: 100%; height: 100%; object-fit: cover; }
+
+        .content-title { font-family: 'Bangers', cursive; font-size: 2.2rem; letter-spacing: 1px; color: var(--ink); margin-bottom: 10px; line-height: 1.1; text-shadow: 2px 2px 0 var(--accent2); -webkit-text-stroke: 1px var(--ink); }
+        
+        /* 2. Sinopsis / Deskripsi */
+        .synopsis-box { background: var(--paper); border: 2.5px solid var(--ink); border-radius: 8px; padding: 15px; text-align: left; font-size: 0.9rem; font-weight: 700; line-height: 1.5; margin-bottom: 20px; }
+        .synopsis-title { font-family: 'Bangers', cursive; font-size: 1.1rem; margin-bottom: 5px; color: var(--accent); letter-spacing: 0.5px; }
+
+        /* 3. Teks Info Spesifikasi */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: left; background: #fff; border: 2.5px solid var(--ink); border-radius: 8px; padding: 15px; margin-bottom: 25px; font-size: 0.85rem; font-weight: 800; }
+        .info-item { border-bottom: 1.5px dashed #ccc; padding-bottom: 4px; }
+        .info-item span { color: #555; font-weight: 900; text-transform: uppercase; font-size: 0.75rem; display: block; margin-bottom: 2px; }
+
+        /* 4 & 5. Daftar Chapter Modis */
+        .section-title { font-family: 'Bangers', cursive; font-size: 1.5rem; text-align: left; margin-bottom: 12px; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
+        .chapter-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 30px; }
+        
+        .chapter-item { display: flex; align-items: center; gap: 12px; background: #fff; border: 3px solid var(--ink); border-radius: 10px; padding: 10px; box-shadow: 3px 3px 0 var(--ink); text-decoration: none; color: var(--ink); transition: 0.1s; }
+        .chapter-item:hover { transform: translate(-2px, -2px); box-shadow: 5px 5px 0 var(--ink); background: var(--paper); }
+        
+        .ch-thumb-box { width: 55px; height: 55px; border: 2px solid var(--ink); border-radius: 6px; overflow: hidden; background: #ddd; flex-shrink: 0; }
+        .ch-thumb-box img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .ch-details { text-align: left; }
+        .ch-name { font-weight: 900; font-size: 0.95rem; text-transform: uppercase; margin-bottom: 2px; }
+        .ch-date { font-size: 0.75rem; color: #666; font-weight: 700; }
+
+        /* 6, 7 & 8. Area Komentar */
+        .comment-section { background: #fff; border: 4px solid var(--ink); box-shadow: var(--ps); border-radius: 12px; padding: 20px; text-align: left; }
+        
+        .lock-box { background: #ffe3e3; border: 2px dashed var(--accent); border-radius: 8px; padding: 15px; text-align: center; font-weight: 800; font-size: 0.9rem; margin-bottom: 15px; color: var(--accent); }
+        .btn-lock-login { background: var(--accent); color: white; border: 2px solid var(--ink); padding: 5px 12px; font-weight: 900; border-radius: 4px; margin-top: 8px; cursor: pointer; display: inline-block; text-decoration: none; font-size: 0.8rem; }
+
+        .comment-form { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        .comment-input { width: 100%; padding: 12px; border: 2.5px solid var(--ink); border-radius: 8px; font-family: inherit; font-weight: 700; font-size: 0.9rem; outline: none; resize: none; }
+        .btn-send-comment { background: var(--accent3); color: white; border: 2.5px solid var(--ink); padding: 10px; font-weight: 900; border-radius: 6px; cursor: pointer; text-transform: uppercase; font-size: 0.85rem; text-align: center; box-shadow: 2px 2px 0 var(--ink); }
+        
+        .comment-list { display: flex; flex-direction: column; gap: 12px; }
+        .comment-card { background: var(--paper); border: 2px solid var(--ink); padding: 12px; border-radius: 8px; }
+        .comment-header { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 900; margin-bottom: 6px; border-bottom: 1px dashed #ccc; padding-bottom: 4px; }
+        .comment-user { color: var(--accent3); }
+        .comment-time { color: #777; }
+        .comment-text { font-size: 0.88rem; font-weight: 700; color: #111; line-height: 1.4; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-nav">
+        <a href="index.html" class="btn-back">⬅ KEMBALI BERANDA</a>
+        <div style="font-family:'Bangers'; font-size:1.2rem; letter-spacing:0.5px;">⭐ PREVIEW ZONE</div>
+    </div>
+
+    <div class="main-card">
+        <div class="thumb-wrapper">
+            <img id="viewThumbnail" class="thumb-img" src="" alt="Cover">
+        </div>
+        <h1 id="viewTitle" class="content-title">Memuat Judul...</h1>
+        
+        <div class="synopsis-box">
+            <div class="synopsis-title">📖 SINOPSIS / DESKRIPSI</div>
+            <p id="viewSynopsis">Membahas tutorial pengerjaan mesin, info otomotif, atau kelanjutan cerita komik zone update terbaru hari ini secara lengkap dan terstruktur.</p>
+        </div>
+
+        <div class="info-grid">
+            <div class="info-item"><span>📌 Status</span><div id="infoStatus">Ongoing</div></div>
+            <div class="info-item"><span>⚡ Type</span><div id="infoType">Manga / Clip</div></div>
+            <div class="info-item"><span>📚 Series</span><div id="infoSeries">Honda Beat Tuning</div></div>
+            <div class="info-item"><span>👤 Character</span><div id="infoCharacter">Sholeh, Mekanik</div></div>
+            <div class="info-item"><span>✍️ Author</span><div id="infoAuthor">Ardan Store</div></div>
+            <div class="info-item"><span>⭐ Rating</span><div id="infoRating">9.8</div></div>
+            <div class="info-item"><span>📅 Create Date</span><div id="infoDate">-</div></div>
+        </div>
+
+        <div class="section-title">📂 <span id="listTitleLabel">DAFTAR CHAPTER</span></div>
+        <div class="chapter-list" id="chapterContainer">
+            </div>
+    </div>
+
+    <div class="comment-section">
+        <div class="section-title">💬 KOLOM KOMENTAR</div>
+        
+        <div id="commentLockArea" class="lock-box" style="display: none;">
+            🔒 Kamu harus login akun terlebih dahulu untuk mengirim komentar!
+            <br>
+            <a href="auth.html" class="btn-lock-login">🔑 LOGIN SEKARANG</a>
+        </div>
+
+        <form id="commentFormArea" class="comment-form" onsubmit="kirimKomentarBaru(event)" style="display: none;">
+            <textarea id="inputKomenTeks" class="comment-input" rows="3" placeholder="Tulis opini menarikmu di sini bre..." required></textarea>
+            <button type="submit" class="btn-send-comment">🚀 KIPAS KOMENTAR</button>
+        </form>
+
+        <div class="comment-list" id="commentListContainer">
+            </div>
+    </div>
+</div>
+
+<script>
+    // Ambil parameter ID & TIPE dari URL Browser (?id=1&type=komik)
+    const urlParams = new URLSearchParams(window.location.search);
+    const kontenId = urlParams.get('id') || "1";
+    const kontenTipe = urlParams.get('type') || "komik"; // 'komik' atau 'video'
+
+    // Cek Login Status (menyesuaikan database auth.html/server.js milikmu)
+    let namaUserAktif = localStorage.getItem('uz_active_user') || "";
+    let isUserLoggedIn = namaUserAktif !== "";
+
+    // Fungsi Inisialisasi Halaman
+    window.addEventListener('DOMContentLoaded', () => {
+        aturProteksiKomentar();
+        muatDataDetailKonten();
+        muatKomentarLokal();
+    });
+
+    function aturProteksiKomentar() {
+        if(isUserLoggedIn) {
+            document.getElementById('commentFormArea').style.display = 'flex';
+            document.getElementById('commentLockArea').style.display = 'none';
+        } else {
+            document.getElementById('commentFormArea').style.display = 'none';
+            document.getElementById('commentLockArea').style.display = 'block';
+        }
+    }
+
+    // Melacak data dari Backend Server / Local HP
+    async function muatDataDetailKonten() {
+        let judul = "Konten Misterius";
+        let thumb = "/uploads/default.jpg";
+        let rating = "9.5";
+        let genre = "Umum";
+        let chaptersList = [];
+
+        // Ambil data sesuai tipe
+        if (kontenTipe === 'video') {
+            document.getElementById('listTitleLabel').textContent = "PLAYLIST / VIDEO KLIP";
+            document.getElementById('infoType').textContent = "Video Tutorial";
+            document.getElementById('infoSeries').textContent = "Video Zone AutoSave";
+            
+            try {
+                let res = await fetch('/api/videos');
+                if(res.ok) {
+                    let videos = await res.json();
+                    let vData = videos.find(v => v.id === kontenId);
+                    if(vData) {
+                        judul = vData.judul;
+                        thumb = vData.thumbnail || "/uploads/default_thumb.jpg";
+                        genre = vData.kategori || "Modifikasi";
+                        // Video bertindak sebagai single chapter/link play tunggal
+                        chaptersList.push({ id: vData.id, nama: "Putar Video: " + vData.judul, tanggal: "Tersimpan", fileUrl: vData.url });
+                    }
+                }
+            } catch(e) { console.log("Gagal ambil video server."); }
+        } else {
+            // Tipe Komik
+            document.getElementById('listTitleLabel').textContent = "DAFTAR CHAPTER TERSEDIA";
+            document.getElementById('infoType').textContent = "Manga / Manhua";
+            document.getElementById('infoSeries').textContent = "KomikZone Main Series";
+
+            try {
+                let res = await fetch('/api/komik');
+                if(res.ok) {
+                    let komiks = await res.json();
+                    let kData = komiks.find(k => k.id === kontenId);
+                    if(kData) {
+                        judul = kData.t || kData.judul;
+                        thumb = kData.img || kData.thumbnail;
+                        genre = kData.g || kData.kategori;
+                        rating = kData.r || "9.8";
+                        if(kData.chapters) {
+                            kData.chapters.forEach(ch => {
+                                chaptersList.push({ id: ch.id, nama: ch.nama, tanggal: ch.info || "Baru rilis", fileUrl: "baca.html?ch=" + ch.id });
+                            });
+                        }
+                    }
+                }
+            } catch(e) { console.log("Gagal ambil komik server."); }
+        }
+
+        // Tempel data ke elemen HTML
+        document.getElementById('viewTitle').textContent = judul;
+        document.getElementById('viewThumbnail').src = thumb;
+        document.getElementById('infoRating').textContent = rating;
+        document.getElementById('infoAuthor').textContent = "Ardan Store";
+        document.getElementById('infoCharacter').textContent = kontenTipe === 'video' ? "Beat Karbu 130cc" : "Main Hero";
+        
+        let tglSekarang = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+        document.getElementById('infoDate').textContent = tglSekarang;
+
+        // Render Daftar Chapter/Video (Fitur No 4 & 5: Kotak thumbnail + teks di samping + waktu upload)
+        const chapContainer = document.getElementById('chapterContainer');
+        if(chaptersList.length === 0) {
+            chapContainer.innerHTML = `<div style="text-align:center; color:#999; font-weight:700; padding:10px;">Belum ada list rilis untuk item ini.</div>`;
+            return;
+        }
+
+        // Modifikasi link href tujuan akhir pas diklik play/baca
+        chapContainer.innerHTML = chaptersList.map(ch => {
+            let targetHref = kontenTipe === 'video' ? ch.fileUrl : `baca.html?id=${kontenId}&ch=${ch.id}`;
+            return `
+                <a href="${targetHref}" class="chapter-item">
+                    <div class="ch-thumb-box">
+                        <img src="${thumb}" alt="thumb">
+                    </div>
+                    <div class="ch-details">
+                        <div class="ch-name">${ch.nama}</div>
+                        <div class="ch-date">🕒 Diupload: ${ch.tanggal}</div>
+                    </div>
+                </a>
+            `;
+        }).join('');
+    }
+
+    // Mengurus Database Komentar (Fitur No 6, 7 & 8)
+    function muatKomentarLokal() {
+        const container = document.getElementById('commentListContainer');
+        let dbKomen global = JSON.parse(localStorage.getItem('uz_global_comments')) || {};
+        
+        // Buat key unik per konten biar komen gontok-gontokan gak ketukar halaman
+        let keyKonten = kontenTipe + "_" + kontenId;
+        let listKomen = dbKomen[keyKonten] || [];
+
+        if(listKomen.length === 0) {
+            container.innerHTML = `<div style="text-align:center; color:#999; font-weight:700; padding:20px 0;">Belum ada komentar. Yuk jadi yang pertama komentar bre!</div>`;
+            return;
+        }
+
+        container.innerHTML = listKomen.map(k => `
+            <div class="comment-card">
+                <div class="comment-header">
+                    <span class="comment-user">👤 ${k.user}</span>
+                    <span class="comment-time">${k.waktu}</span>
+                </div>
+                <div class="comment-text">${k.teks}</div>
+            </div>
+        `).join('');
+    }
+
+    function kirimKomentarBaru(e) {
+        e.preventDefault();
+        if(!isUserLoggedIn) {
+            alert("Harap login dulu bre!");
+            return;
+        }
+
+        const inputTeks = document.getElementById('inputKomenTeks').value;
+        let dbKomen = JSON.parse(localStorage.getItem('uz_global_comments')) || {};
+        let keyKonten = kontenTipe + "_" + kontenId;
+        
+        if(!dbKomen[keyKonten]) dbKomen[keyKonten] = [];
+
+        let waktuSkrg = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + " WIB";
+
+        dbKomen[keyKonten].push({
+            user: namaUserAktif,
+            teks: inputTeks,
+            waktu: waktuSkrg
+        });
+
+        localStorage.setItem('uz_global_comments', JSON.stringify(dbKomen));
+        document.getElementById('inputKomenTeks').value = "";
+        
+        // Refresh daftar komentar orang-orang
+        muatKomentarLokal();
+        alert("✅ Komentar kamu berhasil ditiup ke beranda!");
+    }
+</script>
+</body>
+</html>
