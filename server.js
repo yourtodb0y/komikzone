@@ -382,18 +382,21 @@ http.createServer((req, res) => {
   let urlBersih = url.split('?')[0]; 
   let f = path.join(__dirname, urlBersih === '/' ? 'index.html' : urlBersih);
   
+    // --- BAGIAN PENUTUP FILE ---
   fs.readFile(f, (err, data) => {
-    if (err) { 
-      res.writeHead(404); 
-      res.end('404 - File Tidak Ditemukan: ' + urlBersih); 
-      return; 
+    if (err) {
+      res.writeHead(404);
+      res.end('File Tidak Ditemukan');
+      return;
     }
-    res.writeHead(200, { 'Content-Type': MIME[path.extname(f)] || 'text/plain' });
+    const ext = path.extname(f);
+    res.writeHead(200, { 'Content-Type': MIME[ext] || 'text/plain' });
     res.end(data);
   });
+}); // <--- INI ADALAH PENUTUP DARI server.on('request', ...)
 
+// --- BAGIAN SERVER LISTENING ---
 const PORT = process.env.PORT || 8080;
 server.listen(PORT, '0.0.0.0', () => {
     console.log(`Server berjalan di port ${PORT}`);
 });
-
